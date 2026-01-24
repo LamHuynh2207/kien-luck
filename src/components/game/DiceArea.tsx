@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { GamePhase } from '@/types/game';
 
@@ -26,17 +25,6 @@ interface DiceAreaProps {
  * - Hiệu ứng lắc khi đang shake
  */
 export const DiceArea = ({ phase, diceResults, onReveal }: DiceAreaProps) => {
-  const [isRevealing, setIsRevealing] = useState(false);
-
-  // Xử lý reveal animation
-  useEffect(() => {
-    if (phase === 'revealing') {
-      setIsRevealing(true);
-    } else if (phase === 'waiting' || phase === 'selecting') {
-      setIsRevealing(false);
-    }
-  }, [phase]);
-
   const handleRevealClick = () => {
     if (phase === 'shaking') {
       onReveal();
@@ -48,37 +36,37 @@ export const DiceArea = ({ phase, diceResults, onReveal }: DiceAreaProps) => {
 
   return (
     <div className="relative w-full max-w-md mx-auto">
-      {/* Plate / Đĩa */}
-      <div className="plate-style w-full aspect-[4/3] flex items-center justify-center relative overflow-hidden">
+      {/* Plate / Đĩa - transparent to show background */}
+      <div className="w-full aspect-square flex items-center justify-center relative">
         {/* Dice container */}
-        <div className="absolute inset-0 flex items-center justify-center gap-2 p-8">
+        <div className="absolute inset-0 flex items-center justify-center gap-3 p-8">
           {showResults ? (
             // Hiển thị 3 xúc xắc kết quả
             diceResults.map((result, index) => (
               <div
                 key={index}
                 className={cn(
-                  'w-1/3 max-w-[120px] animate-fade-in-up',
+                  'w-1/3 max-w-[100px] animate-fade-in',
                 )}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
                 <img
                   src={DICE_IMAGES[result - 1]}
                   alt={`Dice ${result}`}
-                  className="w-full h-auto object-contain drop-shadow-lg"
+                  className="w-full h-auto object-contain drop-shadow-2xl"
                 />
               </div>
             ))
           ) : (
-            // Placeholder xúc xắc
+            // Placeholder xúc xắc khi chưa có kết quả
             <div className="flex gap-4">
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}
                   className={cn(
-                    'w-16 h-16 rounded-lg bg-muted/30',
+                    'w-16 h-16 rounded-lg',
                     'flex items-center justify-center',
-                    'text-4xl',
+                    'text-4xl opacity-50',
                   )}
                 >
                   🎲
@@ -88,26 +76,26 @@ export const DiceArea = ({ phase, diceResults, onReveal }: DiceAreaProps) => {
           )}
         </div>
 
-        {/* Bowl overlay */}
+        {/* Bowl overlay - using bat.png */}
         <div
           className={cn(
-            'absolute inset-0 transition-transform duration-700 ease-out',
+            'absolute inset-0 transition-all duration-700 ease-out',
             'flex items-center justify-center cursor-pointer',
             // Hide bowl when showing results
-            phase === 'result' && '-translate-x-[120%]',
-            phase === 'revealing' && '-translate-x-[120%]',
+            phase === 'result' && 'opacity-0 scale-75 pointer-events-none',
+            phase === 'revealing' && 'opacity-0 scale-75 pointer-events-none',
             // Show and shake during shaking phase
-            phase === 'shaking' && 'translate-x-0 animate-bowl-shake',
+            phase === 'shaking' && 'opacity-100 scale-100 animate-bowl-shake',
             // Initial position for other phases
-            (phase === 'selecting' || phase === 'waiting') && 'translate-x-0',
+            (phase === 'selecting' || phase === 'waiting') && 'opacity-100 scale-100',
           )}
           onClick={handleRevealClick}
         >
           <img
             src={bowlImg}
-            alt="Bowl"
+            alt="Bát"
             className={cn(
-              'w-full h-full object-contain',
+              'w-4/5 h-4/5 object-contain drop-shadow-2xl',
               phase === 'shaking' && 'cursor-pointer hover:brightness-110',
             )}
           />
@@ -116,8 +104,8 @@ export const DiceArea = ({ phase, diceResults, onReveal }: DiceAreaProps) => {
           {phase === 'shaking' && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className={cn(
-                'bg-background/90 text-foreground px-4 py-2 rounded-lg',
-                'font-bold text-lg shadow-lg animate-pulse',
+                'bg-background/90 text-foreground px-6 py-3 rounded-xl',
+                'font-bold text-xl shadow-lg animate-pulse',
               )}>
                 👆 Click để MỞ!
               </div>
@@ -129,18 +117,24 @@ export const DiceArea = ({ phase, diceResults, onReveal }: DiceAreaProps) => {
       {/* Phase indicator */}
       <div className="text-center mt-4">
         {phase === 'waiting' && (
-          <p className="text-foreground/80 animate-pulse">Sẵn sàng chơi...</p>
+          <p className="text-foreground/80 text-lg font-semibold animate-pulse">
+            Sẵn sàng chơi...
+          </p>
         )}
         {phase === 'selecting' && (
-          <p className="text-primary font-bold animate-pulse">🎯 Hãy chọn 1 ô KIẾN!</p>
+          <p className="text-primary font-bold text-xl animate-pulse">
+            🎯 Nhấn LẮC để bắt đầu!
+          </p>
         )}
         {phase === 'shaking' && (
-          <p className="text-primary font-bold animate-bounce">🔥 Click bát để mở!</p>
+          <p className="text-primary font-bold text-xl animate-bounce">
+            🔥 Click bát để mở kết quả!
+          </p>
         )}
         {phase === 'result' && (
-          <div className="flex justify-center gap-2 mt-2">
+          <div className="flex justify-center gap-4 mt-2">
             {diceResults.map((r, i) => (
-              <span key={i} className="text-2xl font-bold text-primary">
+              <span key={i} className="text-3xl font-bold text-primary drop-shadow-lg">
                 {r}
               </span>
             ))}
