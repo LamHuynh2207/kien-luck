@@ -38,31 +38,19 @@ export const GameBoard = () => {
     }
   };
 
-  // Button label dựa vào phase
-  const getButtonLabel = () => {
-    switch (phase) {
-      case 'waiting':
-        return undefined; // Dùng hình
-      case 'selecting':
-        return 'BẮT ĐẦU LẮC!';
-      case 'shaking':
-        return 'ĐANG LẮC...';
-      case 'result':
-        return '🔄 LẮC LẠI';
-      default:
-        return undefined;
-    }
-  };
-
   return (
     <div 
       className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative overflow-hidden"
       style={{ backgroundImage: `url(${backgroundImg})` }}
     >
-      {/* Content container */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4 lg:p-8">
-        {/* Dice area - centered */}
-        <div className="w-full max-w-lg">
+      {/* Content container - căn chỉnh theo vị trí đĩa trên background */}
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
+        
+        {/* Spacer để đẩy DiceArea xuống đúng vị trí đĩa trên background */}
+        <div className="flex-1" />
+        
+        {/* Dice area - căn giữa */}
+        <div className="w-full max-w-md">
           <DiceArea
             phase={phase}
             diceResults={diceResults}
@@ -70,14 +58,15 @@ export const GameBoard = () => {
           />
         </div>
 
-        {/* Bottom: Shake button */}
-        <div className="mt-8">
+        {/* Bottom: Shake button - luôn dùng hình ảnh */}
+        <div className="mt-4 mb-8">
           <ShakeButton
             onClick={handleShakeClick}
             disabled={phase === 'shaking' || phase === 'revealing'}
-            label={getButtonLabel()}
           />
         </div>
+        
+        <div className="flex-1" />
       </div>
     </div>
   );
