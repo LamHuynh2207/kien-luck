@@ -40,7 +40,7 @@ export const useGameLogic = () => {
   }, [gameState.phase, gameState.selectedCard, cards]);
 
   /**
-   * Bắt đầu lắc - che bát và cho chọn ô
+   * Bắt đầu lắc - chuyển sang phase selecting rồi shaking
    */
   const startShaking = useCallback(() => {
     // Reset cards
@@ -50,29 +50,21 @@ export const useGameLogic = () => {
       ...INITIAL_GAME_STATE,
       phase: 'selecting',
       round: gameState.round,
-      message: 'Chọn 1 ô KIẾN của bạn!',
+      message: 'Nhấn LẮC để bắt đầu!',
     });
   }, [gameState.round]);
 
   /**
-   * Bắt đầu animation lắc bát
+   * Bắt đầu animation lắc bát - không cần chọn ô nữa
    */
   const shakeStart = useCallback(() => {
-    if (gameState.selectedCard === null) {
-      setGameState(prev => ({
-        ...prev,
-        message: '⚠️ Vui lòng chọn 1 ô trước!',
-      }));
-      return false;
-    }
-
     setGameState(prev => ({
       ...prev,
       phase: 'shaking',
       message: 'Đang lắc xúc xắc...',
     }));
     return true;
-  }, [gameState.selectedCard]);
+  }, []);
 
   /**
    * Mở kết quả - hiển thị xúc xắc và xác định thắng/thua
