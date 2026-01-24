@@ -1,13 +1,21 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { GameBoard } from '@/components/game/GameBoard';
 
+/**
+ * Trang chính - Game KIẾN LUCK
+ * 
+ * Luật chơi:
+ * 1. Nhấn LẮC để bắt đầu
+ * 2. Chọn 1 ô KIẾN (1-6)
+ * 3. Hệ thống lắc 3 xúc xắc
+ * 4. Click bát để mở kết quả
+ * 5. Nếu ô bạn chọn trùng với ít nhất 1 xúc xắc → THẮNG
+ * 6. Nếu không trùng → THUA
+ */
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <main className="min-h-screen">
+      <GameBoard />
+    </main>
   );
 };
 
