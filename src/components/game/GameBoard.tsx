@@ -44,29 +44,29 @@ export const GameBoard = () => {
       style={{ backgroundImage: `url(${backgroundImg})` }}
     >
       {/* Content container - căn chỉnh theo vị trí đĩa trên background */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="relative z-10 min-h-screen flex flex-col items-center">
         
-        {/* Spacer để đẩy DiceArea xuống đúng vị trí đĩa trên background */}
-        <div className="flex-1" />
+        {/* Top spacer - đẩy xuống khoảng 8% từ trên */}
+        <div className="h-[8vh]" />
         
-        {/* Dice area - căn giữa */}
-        <div className="w-full max-w-md">
-          <DiceArea
-            phase={phase}
-            diceResults={diceResults}
-            onReveal={handleReveal}
-          />
+        {/* Dice area - căn với vị trí đĩa trên background */}
+        <div className="w-full flex-1 flex items-start justify-center">
+          <div className="w-[85vw] max-w-[600px] md:w-[70vw] lg:w-[55vw]">
+            <DiceArea
+              phase={phase}
+              diceResults={diceResults}
+              onReveal={handleReveal}
+            />
+          </div>
         </div>
 
-        {/* Bottom: Shake button - luôn dùng hình ảnh */}
-        <div className="mt-4 mb-8">
+        {/* Bottom: Shake button - đặt ngay dưới đĩa */}
+        <div className="pb-[12vh] md:pb-[15vh]">
           <ShakeButton
             onClick={handleShakeClick}
             disabled={phase === 'shaking' || phase === 'revealing'}
           />
         </div>
-        
-        <div className="flex-1" />
       </div>
     </div>
   );
