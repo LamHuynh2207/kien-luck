@@ -8,6 +8,11 @@ import {
 
 /**
  * Custom hook quản lý toàn bộ logic game KIẾN LUCK
+ * 
+ * Flow:
+ * 1. waiting -> Nhấn LẮC -> shaking (bát lắc)
+ * 2. shaking -> Click bát -> revealing -> result (hiện xúc xắc)
+ * 3. result -> Nhấn LẮC -> quay lại waiting
  */
 export const useGameLogic = () => {
   const [gameState, setGameState] = useState<GameState>(INITIAL_GAME_STATE);
@@ -21,99 +26,52 @@ export const useGameLogic = () => {
   }, []);
 
   /**
-   * Người chơi chọn 1 ô kiến
-   */
-  const selectCard = useCallback((cardId: number) => {
-    if (gameState.phase !== 'selecting') return;
-    if (gameState.selectedCard !== null) return; // Đã chọn rồi
-
-    setGameState(prev => ({
-      ...prev,
-      selectedCard: cardId,
-      message: `Bạn đã chọn ${cards.find(c => c.id === cardId)?.name}!`,
-    }));
-
-    setCards(prev => prev.map(card => ({
-      ...card,
-      state: card.id === cardId ? 'selected' : 'normal',
-    })));
-  }, [gameState.phase, gameState.selectedCard, cards]);
-
-  /**
-   * Bắt đầu lắc - chuyển sang phase selecting rồi shaking
+   * Bắt đầu lắc bát - chuyển sang phase shaking
    */
   const startShaking = useCallback(() => {
     // Reset cards
     setCards(ANT_CARDS.map(c => ({ ...c })));
     
-    setGameState({
-      ...INITIAL_GAME_STATE,
-      phase: 'selecting',
-      round: gameState.round,
-      message: 'Nhấn LẮC để bắt đầu!',
-    });
-  }, [gameState.round]);
-
-  /**
-   * Bắt đầu animation lắc bát - không cần chọn ô nữa
-   */
-  const shakeStart = useCallback(() => {
     setGameState(prev => ({
-      ...prev,
+      ...INITIAL_GAME_STATE,
       phase: 'shaking',
+      round: prev.phase === 'result' ? prev.round + 1 : prev.round,
       message: 'Đang lắc xúc xắc...',
     }));
-    return true;
   }, []);
 
   /**
-   * Mở kết quả - hiển thị xúc xắc và xác định thắng/thua
+   * Mở kết quả - bát trượt sang trái, hiển thị xúc xắc
    */
   const revealResult = useCallback(() => {
     const results = rollDice();
-    const selectedId = gameState.selectedCard;
-    
-    // Kiểm tra thắng: ô đã chọn có trong kết quả xúc xắc không
-    const isWin = selectedId !== null && results.includes(selectedId);
 
+    // Transition qua revealing trước
     setGameState(prev => ({
       ...prev,
-      phase: 'result',
-      diceResults: results,
-      isWinner: isWin,
-      message: isWin 
-        ? '🎉 CHÚC MỪNG! Bạn được chọn tiếp!' 
-        : '❌ Tiếc quá! Bạn đã bị loại!',
+      phase: 'revealing',
+      message: 'Đang mở...',
     }));
 
-    // Cập nhật trạng thái các thẻ
-    setCards(prev => prev.map(card => {
-      const isInResult = results.includes(card.id);
-      const isSelected = card.id === selectedId;
+    // Sau đó chuyển sang result
+    setTimeout(() => {
+      setGameState(prev => ({
+        ...prev,
+        phase: 'result',
+        diceResults: results,
+        message: 'Kết quả!',
+      }));
 
-      if (isSelected && isInResult) {
-        return { ...card, state: 'win' };
-      } else if (isSelected && !isInResult) {
-        return { ...card, state: 'lose' };
-      } else if (isInResult) {
-        return { ...card, state: 'win' };
-      }
-      return { ...card, state: 'normal' };
-    }));
-  }, [gameState.selectedCard, rollDice]);
-
-  /**
-   * Chơi lượt tiếp theo
-   */
-  const nextRound = useCallback(() => {
-    setCards(ANT_CARDS.map(c => ({ ...c })));
-    setGameState({
-      ...INITIAL_GAME_STATE,
-      round: gameState.round + 1,
-      phase: 'waiting',
-      message: 'Nhấn LẮC để tiếp tục!',
-    });
-  }, [gameState.round]);
+      // Cập nhật trạng thái các thẻ kiến
+      setCards(prevCards => prevCards.map(card => {
+        const isInResult = results.includes(card.id);
+        return { 
+          ...card, 
+          state: isInResult ? 'win' : 'normal' 
+        };
+      }));
+    }, 300);
+  }, [rollDice]);
 
   /**
    * Reset hoàn toàn game
@@ -126,11 +84,8 @@ export const useGameLogic = () => {
   return {
     gameState,
     cards,
-    selectCard,
     startShaking,
-    shakeStart,
     revealResult,
-    nextRound,
     resetGame,
   };
 };

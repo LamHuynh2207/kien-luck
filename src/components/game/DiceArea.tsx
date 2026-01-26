@@ -3,6 +3,7 @@ import { GamePhase } from '@/types/game';
 
 // Import images
 import bowlImg from '@/assets/bat.png';
+import plateImg from '@/assets/plate.png';
 import dice1 from '@/assets/dice-1.png';
 import dice2 from '@/assets/dice-2.png';
 import dice3 from '@/assets/dice-3.png';
@@ -15,107 +16,98 @@ const DICE_IMAGES = [dice1, dice2, dice3, dice4, dice5, dice6];
 interface DiceAreaProps {
   phase: GamePhase;
   diceResults: number[];
-  onReveal: () => void;
+  onBowlClick: () => void;
 }
 
 /**
- * Khu vực xúc xắc với bát che
- * - Hiển thị 3 xúc xắc trên đĩa
- * - Animation bát che/mở
- * - Hiệu ứng lắc khi đang shake
+ * Khu vực xúc xắc với dĩa và bát che
+ * - Hiển thị dĩa oval
+ * - Bát che trên dĩa
+ * - Animation lắc bát và mở bát (trượt sang trái)
+ * - Hiển thị 3 xúc xắc khi mở
  */
-export const DiceArea = ({ phase, diceResults, onReveal }: DiceAreaProps) => {
-  const handleRevealClick = () => {
-    if (phase === 'shaking') {
-      onReveal();
-    }
-  };
-
+export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => {
   // Hiển thị xúc xắc kết quả
   const showResults = phase === 'result' && diceResults.length === 3;
+  const isBowlVisible = phase !== 'result' && phase !== 'revealing';
 
   return (
-    <div className="relative w-full mx-auto">
-      {/* Container chính - aspect ratio khớp với đĩa oval trên background */}
-      <div className="relative w-full aspect-[16/11] flex items-center justify-center">
+    <div className="relative w-full">
+      {/* Dĩa oval */}
+      <div className="relative w-full aspect-[16/9]">
+        <img
+          src={plateImg}
+          alt="Dĩa"
+          className="w-full h-full object-contain drop-shadow-2xl"
+        />
         
-        {/* Dice container - layout kim tự tháp (1 trên, 2 dưới), căn giữa đĩa */}
-        <div className={cn(
-          'absolute inset-0 flex flex-col items-center justify-center',
-          'pointer-events-none z-10',
-          // Offset để căn giữa trong vùng đĩa
-          'pt-[5%] pb-[8%]',
-        )}>
-          {showResults && (
-            <div className="flex flex-col items-center gap-3 md:gap-4">
-              {/* Dice on top */}
-              <div className="animate-fade-in">
-                <img
-                  src={DICE_IMAGES[diceResults[0] - 1]}
-                  alt={`Dice ${diceResults[0]}`}
-                  className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain drop-shadow-2xl"
-                />
-              </div>
-              
-              {/* 2 dice on bottom */}
-              <div className="flex gap-6 md:gap-8 lg:gap-10">
-                <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
+        {/* Dice container - nằm trên dĩa */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className={cn(
+            'flex flex-col items-center justify-center gap-2 md:gap-3',
+            'transition-opacity duration-500',
+            showResults ? 'opacity-100' : 'opacity-0',
+          )}>
+            {showResults && (
+              <>
+                {/* 1 dice on top */}
+                <div className="animate-fade-in">
                   <img
-                    src={DICE_IMAGES[diceResults[1] - 1]}
-                    alt={`Dice ${diceResults[1]}`}
-                    className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain drop-shadow-2xl"
+                    src={DICE_IMAGES[diceResults[0] - 1]}
+                    alt={`Dice ${diceResults[0]}`}
+                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-2xl"
                   />
                 </div>
-                <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
-                  <img
-                    src={DICE_IMAGES[diceResults[2] - 1]}
-                    alt={`Dice ${diceResults[2]}`}
-                    className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain drop-shadow-2xl"
-                  />
+                
+                {/* 2 dice on bottom */}
+                <div className="flex gap-4 md:gap-6 lg:gap-8">
+                  <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
+                    <img
+                      src={DICE_IMAGES[diceResults[1] - 1]}
+                      alt={`Dice ${diceResults[1]}`}
+                      className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-2xl"
+                    />
+                  </div>
+                  <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                    <img
+                      src={DICE_IMAGES[diceResults[2] - 1]}
+                      alt={`Dice ${diceResults[2]}`}
+                      className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-2xl"
+                    />
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
-          
-          {/* Placeholder khi chưa có kết quả */}
-          {!showResults && phase !== 'shaking' && (
-            <div className="flex flex-col items-center gap-3 opacity-30">
-              <div className="text-4xl md:text-5xl">🎲</div>
-              <div className="flex gap-6 md:gap-8">
-                <div className="text-4xl md:text-5xl">🎲</div>
-                <div className="text-4xl md:text-5xl">🎲</div>
-              </div>
-            </div>
-          )}
+              </>
+            )}
+          </div>
         </div>
 
-        {/* Bowl overlay - using bat.png */}
+        {/* Bowl overlay - trượt sang trái khi mở */}
         <div
           className={cn(
-            'absolute inset-0 transition-all duration-700 ease-out',
-            'flex items-center justify-center cursor-pointer z-20',
-            // Hide bowl when showing results
-            phase === 'result' && 'opacity-0 scale-75 pointer-events-none',
-            phase === 'revealing' && 'opacity-0 scale-75 pointer-events-none',
-            // Show and shake during shaking phase
-            phase === 'shaking' && 'opacity-100 scale-100 animate-bowl-shake',
-            // Initial position for other phases
-            (phase === 'selecting' || phase === 'waiting') && 'opacity-100 scale-100',
+            'absolute inset-0 flex items-center justify-center',
+            'transition-all duration-700 ease-out cursor-pointer z-20',
+            // Trượt sang trái khi reveal/result
+            phase === 'result' && '-translate-x-[150%] opacity-0',
+            phase === 'revealing' && '-translate-x-[150%] opacity-0',
+            // Lắc khi đang shaking
+            phase === 'shaking' && 'animate-bowl-shake',
           )}
-          onClick={handleRevealClick}
+          onClick={onBowlClick}
         >
           <img
             src={bowlImg}
             alt="Bát"
             className={cn(
-              'w-[70%] md:w-[65%] h-auto object-contain drop-shadow-2xl',
+              'w-[85%] md:w-[80%] h-auto object-contain drop-shadow-2xl',
+              // Offset bát lên trên một chút để che vừa dĩa
+              '-mt-[15%]',
               phase === 'shaking' && 'cursor-pointer hover:brightness-110',
             )}
           />
           
-          {/* Click to reveal hint */}
+          {/* Hint text khi đang lắc */}
           {phase === 'shaking' && (
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center -mt-[15%]">
               <div className={cn(
                 'bg-background/90 text-foreground px-4 py-2 md:px-6 md:py-3 rounded-xl',
                 'font-bold text-base md:text-lg shadow-lg animate-pulse',
@@ -125,25 +117,6 @@ export const DiceArea = ({ phase, diceResults, onReveal }: DiceAreaProps) => {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Phase indicator - đơn giản */}
-      <div className="text-center mt-2">
-        {phase === 'waiting' && (
-          <p className="text-foreground/80 text-lg font-semibold animate-pulse">
-            Sẵn sàng chơi...
-          </p>
-        )}
-        {phase === 'selecting' && (
-          <p className="text-primary font-bold text-xl animate-pulse">
-            🎯 Nhấn LẮC để bắt đầu!
-          </p>
-        )}
-        {phase === 'shaking' && (
-          <p className="text-primary font-bold text-xl animate-bounce">
-            🔥 Click bát để mở!
-          </p>
-        )}
       </div>
     </div>
   );
