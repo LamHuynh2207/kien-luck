@@ -42,8 +42,12 @@ export const useGameLogic = () => {
 
   /**
    * Mở kết quả - bát trượt sang trái, hiển thị xúc xắc
+   * Called automatically after 5s shake or can be triggered programmatically
    */
   const revealResult = useCallback(() => {
+    // Only reveal if currently shaking
+    if (gameState.phase !== 'shaking') return;
+    
     const results = rollDice();
 
     // Transition qua revealing trước
@@ -71,7 +75,7 @@ export const useGameLogic = () => {
         };
       }));
     }, 300);
-  }, [rollDice]);
+  }, [rollDice, gameState.phase]);
 
   /**
    * Reset hoàn toàn game

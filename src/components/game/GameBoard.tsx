@@ -4,12 +4,16 @@ import { ShakeButton } from './ShakeButton';
 import { AntBoard } from './AntBoard';
 import { useGameLogic } from '@/hooks/useGameLogic';
 
-// Import background
+// Import assets
 import backgroundImg from '@/assets/background.png';
+import titleImg from '@/assets/title.png';
 
 /**
  * Main game board component
- * Layout theo design:
+ * Layout: 16:9 base with 3:1 LED screen support
+ * 
+ * Structure:
+ * - Title (top-left)
  * - Left: Dĩa + Bát + Nút LẮC
  * - Right: Bảng 6 chú kiến
  */
@@ -18,26 +22,28 @@ export const GameBoard = () => {
     gameState,
     startShaking,
     revealResult,
-    resetGame,
   } = useGameLogic();
 
   const { phase, diceResults } = gameState;
   const shakeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Xử lý click nút LẮC
+  // Handle shake button click
   const handleShakeClick = () => {
     if (phase === 'waiting' || phase === 'result' || phase === 'selecting') {
       startShaking();
     }
   };
 
-  // Tự động dừng lắc sau 5 giây
+  // Auto-reveal after 5 seconds of shaking
   useEffect(() => {
     if (phase === 'shaking') {
-      // Clear timer cũ nếu có
       if (shakeTimerRef.current) {
         clearTimeout(shakeTimerRef.current);
       }
+      
+      shakeTimerRef.current = setTimeout(() => {
+        revealResult();
+      }, 5000);
     }
     
     return () => {
@@ -45,67 +51,53 @@ export const GameBoard = () => {
         clearTimeout(shakeTimerRef.current);
       }
     };
-  }, [phase]);
+  }, [phase, revealResult]);
 
-  // Xử lý click vào bát để mở
-  const handleBowlClick = () => {
-    if (phase === 'shaking') {
-      revealResult();
-    }
-  };
-
-  // Lấy danh sách kiến được highlight từ kết quả xúc xắc
+  // Get highlighted ants from dice results
   const highlightedAnts = phase === 'result' ? diceResults : [];
 
   return (
     <div 
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative overflow-hidden"
+      className="w-full h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
       style={{ backgroundImage: `url(${backgroundImg})` }}
     >
-      {/* Main content - 2 columns layout */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 md:p-8">
-        <div className="w-full max-w-7xl flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12">
+      {/* Title - top left */}
+      <div className="absolute top-[3%] left-[3%] z-20">
+        <img
+          src={titleImg}
+          alt="Kiến Luck"
+          className="w-[15vw] min-w-[120px] max-w-[280px] h-auto object-contain drop-shadow-lg"
+        />
+      </div>
+
+      {/* Main content container - responsive for 16:9 and 3:1 */}
+      <div className="relative z-10 w-full h-full flex items-center justify-center px-[3%] py-[2%]">
+        <div className="w-full h-full max-w-[1800px] flex flex-row items-center justify-center gap-[3%]">
           
           {/* Left side: Dĩa + Bát + Nút LẮC */}
-          <div className="flex flex-col items-center gap-4 md:gap-6">
-            {/* Dice area với dĩa và bát */}
-            <div className="w-[80vw] max-w-[450px] lg:w-[35vw] lg:max-w-[500px]">
+          <div className="flex flex-col items-center justify-center h-full flex-1 max-w-[45%]">
+            {/* Dice area with plate and bowl */}
+            <div className="w-full max-w-[500px] flex-shrink-0">
               <DiceArea
                 phase={phase}
                 diceResults={diceResults}
-                onBowlClick={handleBowlClick}
               />
             </div>
 
-            {/* Shake button - ngay dưới dĩa */}
-            <ShakeButton
-              onClick={handleShakeClick}
-              disabled={phase === 'shaking' || phase === 'revealing'}
-            />
-
-            {/* Hint text */}
-            <div className="text-center">
-              {phase === 'waiting' && (
-                <p className="text-foreground/90 text-lg md:text-xl font-bold animate-pulse">
-                  🎯 Nhấn LẮC để bắt đầu!
-                </p>
-              )}
-              {phase === 'shaking' && (
-                <p className="text-primary font-bold text-lg md:text-xl animate-bounce">
-                  🔥 Click vào bát để mở!
-                </p>
-              )}
-              {phase === 'result' && (
-                <p className="text-primary font-bold text-lg md:text-xl">
-                  ✨ Nhấn LẮC để chơi lại!
-                </p>
-              )}
+            {/* Shake button */}
+            <div className="mt-[3%]">
+              <ShakeButton
+                onClick={handleShakeClick}
+                disabled={phase === 'shaking' || phase === 'revealing'}
+              />
             </div>
           </div>
 
           {/* Right side: Bảng 6 chú kiến */}
-          <div className="w-[85vw] max-w-[500px] lg:w-[40vw] lg:max-w-[550px]">
-            <AntBoard highlightedAnts={highlightedAnts} />
+          <div className="flex-1 max-w-[50%] h-[70%] flex items-center justify-center">
+            <div className="w-full h-full max-h-[500px]">
+              <AntBoard highlightedAnts={highlightedAnts} />
+            </div>
           </div>
         </div>
       </div>
