@@ -38,7 +38,7 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
           className="w-full h-full object-contain drop-shadow-2xl"
         />
         
-        {/* Dice container - centered on plate with overlapping layout */}
+        {/* Dice container - centered on plate with tight pyramid layout */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className={cn(
             'relative flex items-center justify-center',
@@ -46,37 +46,37 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
             showResults ? 'opacity-100' : 'opacity-0',
           )}>
             {showResults && (
-              <div className="relative w-[18vw] min-w-[140px] max-w-[280px] h-[10vw] min-h-[80px] max-h-[160px]">
-                {/* Middle dice - behind */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 animate-fade-in">
+              <div className="relative w-[22vw] min-w-[180px] max-w-[350px] h-[14vw] min-h-[120px] max-h-[220px]">
+                {/* Top center dice */}
+                <div className="absolute left-1/2 top-0 -translate-x-1/2 z-10 animate-fade-in">
                   <img
                     src={DICE_IMAGES[diceResults[0] - 1]}
                     alt={`Dice ${diceResults[0]}`}
-                    className="w-[6vw] min-w-[55px] max-w-[100px] aspect-square object-contain drop-shadow-2xl"
+                    className="w-[9vw] min-w-[80px] max-w-[140px] aspect-square object-contain drop-shadow-2xl"
                   />
                 </div>
                 
-                {/* Left dice - overlapping middle */}
+                {/* Bottom left dice - overlapping top */}
                 <div 
-                  className="absolute left-[10%] top-1/2 -translate-y-1/2 z-20 animate-fade-in" 
+                  className="absolute left-[8%] bottom-0 z-20 animate-fade-in" 
                   style={{ animationDelay: '0.1s' }}
                 >
                   <img
                     src={DICE_IMAGES[diceResults[1] - 1]}
                     alt={`Dice ${diceResults[1]}`}
-                    className="w-[6vw] min-w-[55px] max-w-[100px] aspect-square object-contain drop-shadow-2xl"
+                    className="w-[9vw] min-w-[80px] max-w-[140px] aspect-square object-contain drop-shadow-2xl"
                   />
                 </div>
                 
-                {/* Right dice - overlapping middle */}
+                {/* Bottom right dice - overlapping top */}
                 <div 
-                  className="absolute right-[10%] top-1/2 -translate-y-1/2 z-20 animate-fade-in" 
+                  className="absolute right-[8%] bottom-0 z-20 animate-fade-in" 
                   style={{ animationDelay: '0.2s' }}
                 >
                   <img
                     src={DICE_IMAGES[diceResults[2] - 1]}
                     alt={`Dice ${diceResults[2]}`}
-                    className="w-[6vw] min-w-[55px] max-w-[100px] aspect-square object-contain drop-shadow-2xl"
+                    className="w-[9vw] min-w-[80px] max-w-[140px] aspect-square object-contain drop-shadow-2xl"
                   />
                 </div>
               </div>
