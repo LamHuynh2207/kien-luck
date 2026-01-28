@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { DiceArea } from './DiceArea';
 import { ShakeButton } from './ShakeButton';
 import { AntBoard } from './AntBoard';
@@ -25,7 +24,6 @@ export const GameBoard = () => {
   } = useGameLogic();
 
   const { phase, diceResults } = gameState;
-  const shakeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Handle shake button click
   const handleShakeClick = () => {
@@ -34,24 +32,12 @@ export const GameBoard = () => {
     }
   };
 
-  // Auto-reveal after 5 seconds of shaking
-  useEffect(() => {
+  // Handle bowl click to reveal results
+  const handleBowlClick = () => {
     if (phase === 'shaking') {
-      if (shakeTimerRef.current) {
-        clearTimeout(shakeTimerRef.current);
-      }
-      
-      shakeTimerRef.current = setTimeout(() => {
-        revealResult();
-      }, 5000);
+      revealResult();
     }
-    
-    return () => {
-      if (shakeTimerRef.current) {
-        clearTimeout(shakeTimerRef.current);
-      }
-    };
-  }, [phase, revealResult]);
+  };
 
   // Get highlighted ants from dice results
   const highlightedAnts = phase === 'result' ? diceResults : [];
@@ -61,43 +47,42 @@ export const GameBoard = () => {
       className="w-full h-screen bg-cover bg-center bg-no-repeat relative overflow-hidden"
       style={{ backgroundImage: `url(${backgroundImg})` }}
     >
-      {/* Title - top left */}
-      <div className="absolute top-[3%] left-[3%] z-20">
-        <img
-          src={titleImg}
-          alt="Kiến Luck"
-          className="w-[15vw] min-w-[120px] max-w-[280px] h-auto object-contain drop-shadow-lg"
-        />
-      </div>
-
       {/* Main content container - responsive for 16:9 and 3:1 */}
-      <div className="relative z-10 w-full h-full flex items-center justify-center px-[3%] py-[2%]">
-        <div className="w-full h-full max-w-[1800px] flex flex-row items-center justify-center gap-[3%]">
-          
-          {/* Left side: Dĩa + Bát + Nút LẮC */}
-          <div className="flex flex-col items-center justify-center h-full flex-1 max-w-[45%]">
-            {/* Dice area with plate and bowl */}
-            <div className="w-full max-w-[500px] flex-shrink-0">
-              <DiceArea
-                phase={phase}
-                diceResults={diceResults}
-              />
-            </div>
-
-            {/* Shake button */}
-            <div className="mt-[3%]">
-              <ShakeButton
-                onClick={handleShakeClick}
-                disabled={phase === 'shaking' || phase === 'revealing'}
-              />
-            </div>
+      <div className="relative z-10 w-full h-full flex flex-row items-center justify-center px-[4%] py-[2%]">
+        
+        {/* Left side: Title + Dĩa + Bát + Nút LẮC - aligned vertically */}
+        <div className="flex flex-col items-center justify-center h-full flex-1 max-w-[45%] gap-[2vh]">
+          {/* Title - Kiến Luck */}
+          <div className="flex-shrink-0">
+            <img
+              src={titleImg}
+              alt="Kiến Luck"
+              className="w-[22vw] min-w-[180px] max-w-[400px] h-auto object-contain drop-shadow-lg"
+            />
           </div>
 
-          {/* Right side: Bảng 6 chú kiến */}
-          <div className="flex-1 max-w-[50%] h-[70%] flex items-center justify-center">
-            <div className="w-full h-full max-h-[500px]">
-              <AntBoard highlightedAnts={highlightedAnts} />
-            </div>
+          {/* Dice area with plate and bowl */}
+          <div className="w-full max-w-[450px] flex-shrink-0">
+            <DiceArea
+              phase={phase}
+              diceResults={diceResults}
+              onBowlClick={handleBowlClick}
+            />
+          </div>
+
+          {/* Shake button */}
+          <div className="flex-shrink-0">
+            <ShakeButton
+              onClick={handleShakeClick}
+              disabled={phase === 'shaking' || phase === 'revealing'}
+            />
+          </div>
+        </div>
+
+        {/* Right side: Bảng 6 chú kiến */}
+        <div className="flex-1 max-w-[50%] h-[85%] flex items-start justify-center pt-[2%]">
+          <div className="w-full h-full max-h-[550px]">
+            <AntBoard highlightedAnts={highlightedAnts} />
           </div>
         </div>
       </div>
