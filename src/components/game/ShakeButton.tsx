@@ -7,35 +7,27 @@ interface ShakeButtonProps {
 }
 
 /**
- * Nút LẮC !!! - luôn dùng hình ảnh lac-button.png
+ * Shake button using the lac-button.png image
+ * Triggers dice rolling animation
  */
-export const ShakeButton = ({ onClick, disabled }: ShakeButtonProps) => {
+export const ShakeButton = ({ onClick, disabled = false }: ShakeButtonProps) => {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'relative w-48 md:w-56 mx-auto block',
-        'transition-all duration-200',
+        'relative transition-all duration-300',
         'hover:scale-105 active:scale-95',
-        'focus:outline-none',
-        disabled && 'opacity-50 cursor-not-allowed hover:scale-100 active:scale-100',
+        'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-xl',
+        disabled && 'opacity-60 cursor-not-allowed hover:scale-100',
+        !disabled && 'hover:brightness-110 hover:drop-shadow-[0_0_20px_hsl(45_100%_50%/0.5)]',
       )}
     >
       <img
         src={lacButtonImg}
-        alt="Lắc!!!"
-        className="w-full h-auto drop-shadow-lg"
+        alt="LẮC"
+        className="w-[12vw] min-w-[100px] max-w-[180px] h-auto object-contain drop-shadow-lg"
       />
-      
-      {/* Glow effect */}
-      {!disabled && (
-        <div className={cn(
-          'absolute inset-0 -z-10',
-          'bg-primary/30 blur-xl',
-          'animate-pulse',
-        )} />
-      )}
     </button>
   );
 };

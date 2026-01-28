@@ -277,6 +277,20 @@
     animation: fade-in-up 0.5s ease-out forwards;
   }
 
+  /* Glow pulse for highlighted ants */
+  @keyframes glow-pulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 15px hsl(45 100% 60%)) drop-shadow(0 0 30px hsl(45 100% 50% / 0.5));
+    }
+    50% {
+      filter: drop-shadow(0 0 25px hsl(45 100% 65%)) drop-shadow(0 0 50px hsl(45 100% 55% / 0.7));
+    }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 1.5s ease-in-out infinite;
+  }
+
   /* Card states */
   .card-normal {
     @apply transition-all duration-300;

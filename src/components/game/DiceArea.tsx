@@ -16,35 +16,31 @@ const DICE_IMAGES = [dice1, dice2, dice3, dice4, dice5, dice6];
 interface DiceAreaProps {
   phase: GamePhase;
   diceResults: number[];
-  onBowlClick: () => void;
 }
 
 /**
- * Khu vực xúc xắc với dĩa và bát che
- * - Hiển thị dĩa oval
- * - Bát che trên dĩa
- * - Animation lắc bát và mở bát (trượt sang trái)
- * - Hiển thị 3 xúc xắc khi mở
+ * Dice area with plate and bowl
+ * - Shows plate as base
+ * - Bowl covers dice, slides left when revealed
+ * - 3 dice displayed in pyramid layout when revealed
  */
-export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => {
-  // Hiển thị xúc xắc kết quả
+export const DiceArea = ({ phase, diceResults }: DiceAreaProps) => {
   const showResults = phase === 'result' && diceResults.length === 3;
-  const isBowlVisible = phase !== 'result' && phase !== 'revealing';
 
   return (
     <div className="relative w-full">
-      {/* Dĩa oval */}
-      <div className="relative w-full aspect-[16/9]">
+      {/* Plate base */}
+      <div className="relative w-full aspect-[16/10]">
         <img
           src={plateImg}
           alt="Dĩa"
           className="w-full h-full object-contain drop-shadow-2xl"
         />
         
-        {/* Dice container - nằm trên dĩa */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        {/* Dice container - centered on plate */}
+        <div className="absolute inset-0 flex items-center justify-center pt-[2%]">
           <div className={cn(
-            'flex flex-col items-center justify-center gap-2 md:gap-3',
+            'flex flex-col items-center justify-center gap-[3%]',
             'transition-opacity duration-500',
             showResults ? 'opacity-100' : 'opacity-0',
           )}>
@@ -55,24 +51,24 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
                   <img
                     src={DICE_IMAGES[diceResults[0] - 1]}
                     alt={`Dice ${diceResults[0]}`}
-                    className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-2xl"
+                    className="w-[4.5vw] min-w-[50px] max-w-[90px] aspect-square object-contain drop-shadow-2xl"
                   />
                 </div>
                 
                 {/* 2 dice on bottom */}
-                <div className="flex gap-4 md:gap-6 lg:gap-8">
+                <div className="flex gap-[1vw]">
                   <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
                     <img
                       src={DICE_IMAGES[diceResults[1] - 1]}
                       alt={`Dice ${diceResults[1]}`}
-                      className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-2xl"
+                      className="w-[4.5vw] min-w-[50px] max-w-[90px] aspect-square object-contain drop-shadow-2xl"
                     />
                   </div>
                   <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
                     <img
                       src={DICE_IMAGES[diceResults[2] - 1]}
                       alt={`Dice ${diceResults[2]}`}
-                      className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-2xl"
+                      className="w-[4.5vw] min-w-[50px] max-w-[90px] aspect-square object-contain drop-shadow-2xl"
                     />
                   </div>
                 </div>
@@ -81,41 +77,25 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
           </div>
         </div>
 
-        {/* Bowl overlay - trượt sang trái khi mở */}
+        {/* Bowl overlay - slides left when opened */}
         <div
           className={cn(
             'absolute inset-0 flex items-center justify-center',
-            'transition-all duration-700 ease-out cursor-pointer z-20',
-            // Trượt sang trái khi reveal/result
-            phase === 'result' && '-translate-x-[150%] opacity-0',
-            phase === 'revealing' && '-translate-x-[150%] opacity-0',
-            // Lắc khi đang shaking
+            'transition-all duration-700 ease-out z-20',
+            // Slide left when revealing/result
+            (phase === 'result' || phase === 'revealing') && '-translate-x-[150%] opacity-0',
+            // Shake animation during shaking phase
             phase === 'shaking' && 'animate-bowl-shake',
           )}
-          onClick={onBowlClick}
         >
           <img
             src={bowlImg}
             alt="Bát"
             className={cn(
-              'w-[85%] md:w-[80%] h-auto object-contain drop-shadow-2xl',
-              // Offset bát lên trên một chút để che vừa dĩa
-              '-mt-[15%]',
-              phase === 'shaking' && 'cursor-pointer hover:brightness-110',
+              'w-[75%] h-auto object-contain drop-shadow-2xl',
+              '-mt-[12%]',
             )}
           />
-          
-          {/* Hint text khi đang lắc */}
-          {phase === 'shaking' && (
-            <div className="absolute inset-0 flex items-center justify-center -mt-[15%]">
-              <div className={cn(
-                'bg-background/90 text-foreground px-4 py-2 md:px-6 md:py-3 rounded-xl',
-                'font-bold text-base md:text-lg shadow-lg animate-pulse',
-              )}>
-                👆 Click để MỞ!
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

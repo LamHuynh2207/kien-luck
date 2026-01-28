@@ -1,62 +1,80 @@
 import { cn } from '@/lib/utils';
-import antBoardImg from '@/assets/ant-board.png';
+
+// Import board frame and individual ant images
+import boardFrameImg from '@/assets/board-frame.png';
+import antStudent from '@/assets/ant-student.png';
+import antWarrior from '@/assets/ant-warrior.png';
+import antTech from '@/assets/ant-tech.png';
+import antGraduate from '@/assets/ant-graduate.png';
+import antExplorer from '@/assets/ant-explorer.png';
+import antSports from '@/assets/ant-sports.png';
 
 interface AntBoardProps {
-  highlightedAnts: number[]; // IDs of ants to highlight (1-6)
+  highlightedAnts: number[]; // Dice values (1-6)
 }
 
 /**
- * Bảng 6 chú kiến - hiển thị với hiệu ứng highlight khi trúng xúc xắc
- * Layout: 3x2 grid khớp với hình ảnh
- * Ant mapping (theo vị trí trong ảnh):
- * 1-Học sinh | 2-Võ sĩ    | 3-Công nghệ
- * 4-Tốt nghiệp | 5-Khám phá | 6-Vận động
+ * Dice result → Ant mapping:
+ * Dice 1 → Asset 11 (explorer) - Position 5
+ * Dice 2 → Asset 9 (tech) - Position 3
+ * Dice 3 → Asset 12 (sports) - Position 6
+ * Dice 4 → Asset 13 (warrior) - Position 2
+ * Dice 5 → Asset 10 (graduate) - Position 4
+ * Dice 6 → Asset 14 (student) - Position 1
+ * 
+ * Layout:
+ * [1-Student] [2-Warrior] [3-Tech]
+ * [4-Graduate] [5-Explorer] [6-Sports]
  */
-export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
-  // Vị trí các ô kiến trong grid (tính theo %)
-  const antPositions = [
-    { id: 1, top: '5%', left: '3%', width: '31%', height: '45%' },
-    { id: 2, top: '5%', left: '35%', width: '31%', height: '45%' },
-    { id: 3, top: '5%', left: '67%', width: '30%', height: '45%' },
-    { id: 4, top: '50%', left: '3%', width: '31%', height: '45%' },
-    { id: 5, top: '50%', left: '35%', width: '31%', height: '45%' },
-    { id: 6, top: '50%', left: '67%', width: '30%', height: '45%' },
-  ];
+const ANT_SLOTS = [
+  { position: 1, diceValue: 6, image: antStudent, name: 'Kiến Học Sinh' },
+  { position: 2, diceValue: 4, image: antWarrior, name: 'Kiến Võ Sĩ' },
+  { position: 3, diceValue: 2, image: antTech, name: 'Kiến Công Nghệ' },
+  { position: 4, diceValue: 5, image: antGraduate, name: 'Kiến Tốt Nghiệp' },
+  { position: 5, diceValue: 1, image: antExplorer, name: 'Kiến Khám Phá' },
+  { position: 6, diceValue: 3, image: antSports, name: 'Kiến Vận Động' },
+];
 
+export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
   return (
     <div className="relative w-full h-full">
-      {/* Hình ảnh bảng kiến */}
+      {/* Board frame background */}
       <img
-        src={antBoardImg}
-        alt="Bảng 6 chú kiến"
+        src={boardFrameImg}
+        alt="Bảng chọn kiến"
         className="w-full h-full object-contain"
       />
       
-      {/* Overlay highlight cho từng ô kiến */}
-      {antPositions.map((pos) => {
-        const isHighlighted = highlightedAnts.includes(pos.id);
-        return (
-          <div
-            key={pos.id}
-            className={cn(
-              'absolute transition-all duration-500 rounded-lg pointer-events-none',
-              isHighlighted && 'animate-pulse',
-            )}
-            style={{
-              top: pos.top,
-              left: pos.left,
-              width: pos.width,
-              height: pos.height,
-              background: isHighlighted 
-                ? 'radial-gradient(ellipse at center, hsl(45 100% 50% / 0.4), transparent 70%)'
-                : 'transparent',
-              boxShadow: isHighlighted 
-                ? '0 0 30px hsl(45 100% 50% / 0.6), inset 0 0 20px hsl(45 100% 50% / 0.3)'
-                : 'none',
-            }}
-          />
-        );
-      })}
+      {/* Grid of ant slots overlaid on the frame */}
+      <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 p-[3%] gap-[1%]">
+        {ANT_SLOTS.map((slot) => {
+          const isHighlighted = highlightedAnts.includes(slot.diceValue);
+          
+          return (
+            <div
+              key={slot.position}
+              className={cn(
+                'relative flex items-center justify-center p-[5%]',
+                'transition-all duration-500 ease-out',
+              )}
+            >
+              <img
+                src={slot.image}
+                alt={slot.name}
+                className={cn(
+                  'w-full h-full object-contain transition-all duration-500',
+                  isHighlighted && 'animate-glow-pulse',
+                )}
+                style={{
+                  filter: isHighlighted 
+                    ? 'drop-shadow(0 0 20px hsl(45 100% 60%)) drop-shadow(0 0 40px hsl(45 100% 50% / 0.6))'
+                    : 'none',
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
