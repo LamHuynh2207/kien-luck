@@ -34,7 +34,7 @@ export const GameBoard = () => {
 
   // Handle bowl click to reveal results
   const handleBowlClick = () => {
-    if (phase === 'shaking') {
+    if (phase === 'shaking' || phase === 'waiting') {
       revealResult();
     }
   };

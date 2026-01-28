@@ -46,24 +46,22 @@ export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
       />
       
       {/* Grid of ant slots overlaid on the frame - responsive for 3:1 LED */}
-      <div className="absolute inset-[3%] grid grid-cols-3 grid-rows-2 gap-[1.5%]">
+      <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-[1%] p-[7%]">
         {ANT_SLOTS.map((slot) => {
           const isHighlighted = highlightedAnts.includes(slot.diceValue);
-          
           return (
             <div
               key={slot.position}
               className={cn(
-                'relative flex items-center justify-center p-[3%]',
-                'transition-all duration-500 ease-out',
+                'relative flex items-center justify-center overflow-hidden aspect-square',
               )}
             >
               <img
                 src={slot.image}
                 alt={slot.name}
                 className={cn(
-                  'w-full h-full object-contain transition-all duration-300',
-                  isHighlighted && 'animate-ant-glow scale-105',
+                  'w-[70%] h-[70%] object-contain transition-all duration-300',
+                  isHighlighted && 'animate-ant-glow',
                 )}
                 style={{
                   filter: isHighlighted 

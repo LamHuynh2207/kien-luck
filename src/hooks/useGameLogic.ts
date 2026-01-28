@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
   GameState, 
   INITIAL_GAME_STATE, 
@@ -42,11 +42,11 @@ export const useGameLogic = () => {
 
   /**
    * Mở kết quả - bát trượt sang trái, hiển thị xúc xắc
-   * Called automatically after 5s shake or can be triggered programmatically
+   * Can be triggered when shaking or waiting
    */
   const revealResult = useCallback(() => {
-    // Only reveal if currently shaking
-    if (gameState.phase !== 'shaking') return;
+    // Allow reveal when shaking or waiting
+    if (gameState.phase !== 'shaking' && gameState.phase !== 'waiting') return;
     
     const results = rollDice();
 
@@ -84,6 +84,23 @@ export const useGameLogic = () => {
     setCards(ANT_CARDS.map(c => ({ ...c })));
     setGameState(INITIAL_GAME_STATE);
   }, []);
+
+  // Sau 3 giây lắc thì dừng lắc, nhưng vẫn giữ tô che kết quả
+  useEffect(() => {
+    if (gameState.phase === 'shaking') {
+      const timer = setTimeout(() => {
+        setGameState(prev => {
+          if (prev.phase !== 'shaking') return prev;
+          return {
+            ...prev,
+            phase: 'waiting', // Dừng lắc, chuyển về trạng thái chờ mở kết quả
+            message: 'Nhấn vào tô để mở kết quả',
+          };
+        });
+      }, 3000); // 3 giây
+      return () => clearTimeout(timer);
+    }
+  }, [gameState.phase]);
 
   return {
     gameState,
