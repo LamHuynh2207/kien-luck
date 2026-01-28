@@ -26,7 +26,7 @@ export const ShakeButton = ({ onClick, disabled = false }: ShakeButtonProps) => 
       <img
         src={lacButtonImg}
         alt="LẮC"
-        className="w-[12vw] min-w-[100px] max-w-[180px] h-auto object-contain drop-shadow-lg"
+        className="w-[16vw] min-w-[130px] max-w-[240px] h-auto object-contain drop-shadow-lg"
       />
     </button>
   );

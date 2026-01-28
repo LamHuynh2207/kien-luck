@@ -48,21 +48,21 @@ export const GameBoard = () => {
       style={{ backgroundImage: `url(${backgroundImg})` }}
     >
       {/* Main content container - responsive for 16:9 and 3:1 */}
-      <div className="relative z-10 w-full h-full flex flex-row items-center justify-center px-[4%] py-[2%]">
+      <div className="relative z-10 w-full h-full flex flex-row items-center justify-center px-[3%] py-[1%]">
         
-        {/* Left side: Title + Dĩa + Bát + Nút LẮC - aligned vertically */}
-        <div className="flex flex-col items-center justify-center h-full flex-1 max-w-[45%] gap-[2vh]">
-          {/* Title - Kiến Luck */}
+        {/* Left side: Title + Dĩa + Bát + Nút LẮC - aligned vertically with equal spacing */}
+        <div className="flex flex-col items-center justify-evenly h-full flex-1 max-w-[48%]">
+          {/* Title - Kiến Luck - larger */}
           <div className="flex-shrink-0">
             <img
               src={titleImg}
               alt="Kiến Luck"
-              className="w-[22vw] min-w-[180px] max-w-[400px] h-auto object-contain drop-shadow-lg"
+              className="w-[28vw] min-w-[220px] max-w-[500px] h-auto object-contain drop-shadow-lg"
             />
           </div>
 
-          {/* Dice area with plate and bowl */}
-          <div className="w-full max-w-[450px] flex-shrink-0">
+          {/* Dice area with plate and bowl - larger */}
+          <div className="w-full max-w-[550px] flex-shrink-0">
             <DiceArea
               phase={phase}
               diceResults={diceResults}
@@ -70,7 +70,7 @@ export const GameBoard = () => {
             />
           </div>
 
-          {/* Shake button */}
+          {/* Shake button - larger */}
           <div className="flex-shrink-0">
             <ShakeButton
               onClick={handleShakeClick}
@@ -79,9 +79,9 @@ export const GameBoard = () => {
           </div>
         </div>
 
-        {/* Right side: Bảng 6 chú kiến */}
-        <div className="flex-1 max-w-[50%] h-[85%] flex items-start justify-center pt-[2%]">
-          <div className="w-full h-full max-h-[550px]">
+        {/* Right side: Bảng 6 chú kiến - responsive for 3:1 LED */}
+        <div className="flex-1 max-w-[48%] h-[90%] flex items-center justify-center">
+          <div className="w-full h-full max-h-[600px]">
             <AntBoard highlightedAnts={highlightedAnts} />
           </div>
         </div>
