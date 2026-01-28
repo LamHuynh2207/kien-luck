@@ -16,15 +16,16 @@ const DICE_IMAGES = [dice1, dice2, dice3, dice4, dice5, dice6];
 interface DiceAreaProps {
   phase: GamePhase;
   diceResults: number[];
+  onBowlClick?: () => void;
 }
 
 /**
  * Dice area with plate and bowl
  * - Shows plate as base
  * - Bowl covers dice, slides left when revealed
- * - 3 dice displayed in pyramid layout when revealed
+ * - 3 dice displayed in overlapping layout when revealed
  */
-export const DiceArea = ({ phase, diceResults }: DiceAreaProps) => {
+export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => {
   const showResults = phase === 'result' && diceResults.length === 3;
 
   return (
@@ -37,63 +38,70 @@ export const DiceArea = ({ phase, diceResults }: DiceAreaProps) => {
           className="w-full h-full object-contain drop-shadow-2xl"
         />
         
-        {/* Dice container - centered on plate */}
-        <div className="absolute inset-0 flex items-center justify-center pt-[2%]">
+        {/* Dice container - centered on plate with overlapping layout */}
+        <div className="absolute inset-0 flex items-center justify-center">
           <div className={cn(
-            'flex flex-col items-center justify-center gap-[3%]',
+            'relative flex items-center justify-center',
             'transition-opacity duration-500',
             showResults ? 'opacity-100' : 'opacity-0',
           )}>
             {showResults && (
-              <>
-                {/* 1 dice on top */}
-                <div className="animate-fade-in">
+              <div className="relative w-[18vw] min-w-[140px] max-w-[280px] h-[10vw] min-h-[80px] max-h-[160px]">
+                {/* Middle dice - behind */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 animate-fade-in">
                   <img
                     src={DICE_IMAGES[diceResults[0] - 1]}
                     alt={`Dice ${diceResults[0]}`}
-                    className="w-[4.5vw] min-w-[50px] max-w-[90px] aspect-square object-contain drop-shadow-2xl"
+                    className="w-[6vw] min-w-[55px] max-w-[100px] aspect-square object-contain drop-shadow-2xl"
                   />
                 </div>
                 
-                {/* 2 dice on bottom */}
-                <div className="flex gap-[1vw]">
-                  <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
-                    <img
-                      src={DICE_IMAGES[diceResults[1] - 1]}
-                      alt={`Dice ${diceResults[1]}`}
-                      className="w-[4.5vw] min-w-[50px] max-w-[90px] aspect-square object-contain drop-shadow-2xl"
-                    />
-                  </div>
-                  <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
-                    <img
-                      src={DICE_IMAGES[diceResults[2] - 1]}
-                      alt={`Dice ${diceResults[2]}`}
-                      className="w-[4.5vw] min-w-[50px] max-w-[90px] aspect-square object-contain drop-shadow-2xl"
-                    />
-                  </div>
+                {/* Left dice - overlapping middle */}
+                <div 
+                  className="absolute left-[10%] top-1/2 -translate-y-1/2 z-20 animate-fade-in" 
+                  style={{ animationDelay: '0.1s' }}
+                >
+                  <img
+                    src={DICE_IMAGES[diceResults[1] - 1]}
+                    alt={`Dice ${diceResults[1]}`}
+                    className="w-[6vw] min-w-[55px] max-w-[100px] aspect-square object-contain drop-shadow-2xl"
+                  />
                 </div>
-              </>
+                
+                {/* Right dice - overlapping middle */}
+                <div 
+                  className="absolute right-[10%] top-1/2 -translate-y-1/2 z-20 animate-fade-in" 
+                  style={{ animationDelay: '0.2s' }}
+                >
+                  <img
+                    src={DICE_IMAGES[diceResults[2] - 1]}
+                    alt={`Dice ${diceResults[2]}`}
+                    className="w-[6vw] min-w-[55px] max-w-[100px] aspect-square object-contain drop-shadow-2xl"
+                  />
+                </div>
+              </div>
             )}
           </div>
         </div>
 
-        {/* Bowl overlay - slides left when opened */}
+        {/* Bowl overlay - clickable when shaking, slides left when opened */}
         <div
+          onClick={phase === 'shaking' ? onBowlClick : undefined}
           className={cn(
             'absolute inset-0 flex items-center justify-center',
             'transition-all duration-700 ease-out z-20',
             // Slide left when revealing/result
             (phase === 'result' || phase === 'revealing') && '-translate-x-[150%] opacity-0',
             // Shake animation during shaking phase
-            phase === 'shaking' && 'animate-bowl-shake',
+            phase === 'shaking' && 'animate-bowl-shake cursor-pointer',
           )}
         >
           <img
             src={bowlImg}
             alt="Bát"
             className={cn(
-              'w-[75%] h-auto object-contain drop-shadow-2xl',
-              '-mt-[12%]',
+              'w-[70%] h-auto object-contain drop-shadow-2xl',
+              '-mt-[10%]',
             )}
           />
         </div>

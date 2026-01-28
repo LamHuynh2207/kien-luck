@@ -46,7 +46,7 @@ export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
       />
       
       {/* Grid of ant slots overlaid on the frame */}
-      <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 p-[3%] gap-[1%]">
+      <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 p-[4%] gap-[2%]">
         {ANT_SLOTS.map((slot) => {
           const isHighlighted = highlightedAnts.includes(slot.diceValue);
           
@@ -54,7 +54,7 @@ export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
             <div
               key={slot.position}
               className={cn(
-                'relative flex items-center justify-center p-[5%]',
+                'relative flex items-center justify-center p-[8%]',
                 'transition-all duration-500 ease-out',
               )}
             >
@@ -62,12 +62,12 @@ export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
                 src={slot.image}
                 alt={slot.name}
                 className={cn(
-                  'w-full h-full object-contain transition-all duration-500',
-                  isHighlighted && 'animate-glow-pulse',
+                  'w-[85%] h-[85%] object-contain transition-all duration-300',
+                  isHighlighted && 'animate-ant-glow scale-105',
                 )}
                 style={{
                   filter: isHighlighted 
-                    ? 'drop-shadow(0 0 20px hsl(45 100% 60%)) drop-shadow(0 0 40px hsl(45 100% 50% / 0.6))'
+                    ? 'drop-shadow(0 0 25px hsl(45 100% 60%)) drop-shadow(0 0 50px hsl(45 100% 55% / 0.8)) drop-shadow(0 0 80px hsl(45 100% 50% / 0.5))'
                     : 'none',
                 }}
               />
