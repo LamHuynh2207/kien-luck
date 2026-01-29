@@ -42,8 +42,8 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
         
         {/* Dice container - centered on plate with tight pyramid layout */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className={`relative flex items-center justify-center transition-opacity duration-300 ${
-            showResults ? 'opacity-100' : 'opacity-0'
+          <div className={`relative flex items-center justify-center ${
+            showResults ? 'visible' : 'invisible'
           }`}>
             {showResults && (
               <div className="relative w-[26vw] min-w-[220px] max-w-[400px] h-[17vw] min-h-[140px] max-h-[260px]">
