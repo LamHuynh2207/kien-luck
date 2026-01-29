@@ -46,29 +46,29 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
             showResults ? 'visible' : 'invisible'
           }`}>
             {showResults && (
-              <div className="relative w-[26vw] min-w-[220px] max-w-[400px] h-[17vw] min-h-[140px] max-h-[260px]">
+              <div className="relative w-[31vw] min-w-[260px] max-w-[480px] h-[20vw] min-h-[170px] max-h-[310px]">
                 {/* Top center dice */}
-                <div className="absolute left-1/2 top-[10%] -translate-x-1/2 z-10 animate-fade-in">
+                <div className="absolute left-1/2 top-[-12%] -translate-x-1/2 z-10 animate-fade-in">
                   <img
                     src={DICE_IMAGES[diceResults[0] - 1]}
                     alt={`Dice ${diceResults[0]}`}
-                    className="w-[11vw] min-w-[90px] max-w-[160px] aspect-square object-contain drop-shadow-2xl"
+                    className="w-[13vw] min-w-[105px] max-w-[190px] aspect-square object-contain drop-shadow-2xl"
                   />
                 </div>
                 {/* Bottom left dice - overlapping top */}
-                <div className="absolute left-[5%] bottom-0 z-20 animate-fade-in">
+                <div className="absolute left-[5%] bottom-12 z-20 animate-fade-in">
                   <img
                     src={DICE_IMAGES[diceResults[1] - 1]}
                     alt={`Dice ${diceResults[1]}`}
-                    className="w-[11vw] min-w-[90px] max-w-[160px] aspect-square object-contain drop-shadow-2xl"
+                    className="w-[13vw] min-w-[105px] max-w-[190px] aspect-square object-contain drop-shadow-2xl"
                   />
                 </div>
                 {/* Bottom right dice - overlapping top */}
-                <div className="absolute right-[5%] bottom-0 z-20 animate-fade-in">
+                <div className="absolute right-[5%] bottom-12 z-20 animate-fade-in">
                   <img
                     src={DICE_IMAGES[diceResults[2] - 1]}
                     alt={`Dice ${diceResults[2]}`}
-                    className="w-[11vw] min-w-[90px] max-w-[160px] aspect-square object-contain drop-shadow-2xl"
+                    className="w-[13vw] min-w-[105px] max-w-[190px] aspect-square object-contain drop-shadow-2xl"
                   />
                 </div>
               </div>
@@ -88,7 +88,7 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
           <img
             src={bowlImg}
             alt="Bát"
-            className="w-[70%] h-auto object-contain drop-shadow-2xl -mt-[10%]"
+            className="w-[85%] h-auto object-contain drop-shadow-2xl -mt-[10%]"
           />
         </div>
       </div>

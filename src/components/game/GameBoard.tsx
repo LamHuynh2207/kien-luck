@@ -4,7 +4,7 @@ import { AntBoard } from './AntBoard';
 import { useGameLogic } from '@/hooks/useGameLogic';
 
 // Import assets
-import backgroundImg from '@/assets/background.png';
+import backgroundImg from '@/assets/background.jpg';
 import titleImg from '@/assets/title.png';
 
 /**
@@ -51,7 +51,7 @@ export const GameBoard = () => {
       <div className="relative z-10 w-full h-full flex flex-row items-center justify-center px-[3%] py-[1%]">
         
         {/* Left side: Title + Dĩa + Bát + Nút LẮC - aligned vertically with equal spacing */}
-        <div className="flex flex-col items-center justify-evenly h-full flex-1 max-w-[48%]">
+        <div className="flex flex-col items-center justify-start pt-[70px] gap-[20px] h-full flex-1 max-w-[48%]">
           {/* Title - Kiến Luck - larger */}
           <div className="flex-shrink-0">
             <img
