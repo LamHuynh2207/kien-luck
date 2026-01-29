@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import lacButtonImg from '@/assets/lac-button.png';
 
 interface ShakeButtonProps {
@@ -15,13 +14,9 @@ export const ShakeButton = ({ onClick, disabled = false }: ShakeButtonProps) => 
     <button
       onClick={onClick}
       disabled={disabled}
-      className={cn(
-        'relative transition-all duration-300',
-        'hover:scale-105 active:scale-95',
-        'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-xl',
-        disabled && 'opacity-60 cursor-not-allowed hover:scale-100',
-        !disabled && 'hover:brightness-110 hover:drop-shadow-[0_0_20px_hsl(45_100%_50%/0.5)]',
-      )}
+      className={`relative transition-all duration-300 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-xl ${
+        disabled ? 'opacity-60 cursor-not-allowed hover:scale-100' : 'hover:brightness-110 hover:drop-shadow-[0_0_20px_hsl(45_100%_50%/0.5)]'
+      }`}
     >
       <img
         src={lacButtonImg}

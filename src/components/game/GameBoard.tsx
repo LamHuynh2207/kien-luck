@@ -80,7 +80,7 @@ export const GameBoard = () => {
         </div>
 
         {/* Right side: Bảng 6 chú kiến - responsive for 3:1 LED */}
-        <div className="flex-1 max-w-[48%] h-[90%] flex items-center justify-center">
+        <div className="flex-1 max-w-[48%] h-[90%] flex items-start justify-end pt-[120px]">
           <div className="w-full h-full max-h-[600px]">
             <AntBoard highlightedAnts={highlightedAnts} />
           </div>

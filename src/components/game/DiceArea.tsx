@@ -1,4 +1,3 @@
-import { cn } from '@/lib/utils';
 import { GamePhase } from '@/types/game';
 
 // Import images
@@ -27,6 +26,9 @@ interface DiceAreaProps {
  */
 export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => {
   const showResults = phase === 'result' && diceResults.length === 3;
+  const isBowlVisible = phase !== 'result' && phase !== 'revealing';
+  const shouldShakeBowl = phase === 'shaking';
+  const isBowlClickable = phase === 'shaking' || phase === 'waiting';
 
   return (
     <div className="relative w-full">
@@ -40,11 +42,9 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
         
         {/* Dice container - centered on plate with tight pyramid layout */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className={cn(
-            'relative flex items-center justify-center',
-            'transition-opacity duration-300',
-            showResults ? 'opacity-100' : 'opacity-0',
-          )}>
+          <div className={`relative flex items-center justify-center transition-opacity duration-300 ${
+            showResults ? 'opacity-100' : 'opacity-0'
+          }`}>
             {showResults && (
               <div className="relative w-[26vw] min-w-[220px] max-w-[400px] h-[17vw] min-h-[140px] max-h-[260px]">
                 {/* Top center dice */}
@@ -56,9 +56,7 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
                   />
                 </div>
                 {/* Bottom left dice - overlapping top */}
-                <div 
-                  className="absolute left-[5%] bottom-0 z-20 animate-fade-in"
-                >
+                <div className="absolute left-[5%] bottom-0 z-20 animate-fade-in">
                   <img
                     src={DICE_IMAGES[diceResults[1] - 1]}
                     alt={`Dice ${diceResults[1]}`}
@@ -66,9 +64,7 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
                   />
                 </div>
                 {/* Bottom right dice - overlapping top */}
-                <div 
-                  className="absolute right-[5%] bottom-0 z-20 animate-fade-in"
-                >
+                <div className="absolute right-[5%] bottom-0 z-20 animate-fade-in">
                   <img
                     src={DICE_IMAGES[diceResults[2] - 1]}
                     alt={`Dice ${diceResults[2]}`}
@@ -82,25 +78,17 @@ export const DiceArea = ({ phase, diceResults, onBowlClick }: DiceAreaProps) => 
 
         {/* Bowl overlay - clickable when shaking or waiting, slides left when opened */}
         <div
-          onClick={(phase === 'shaking' || phase === 'waiting') ? onBowlClick : undefined}
-          className={cn(
-            'absolute inset-0 flex items-center justify-center',
-            'transition-all duration-700 ease-out z-20',
-            // Slide left when revealing/result
-            (phase === 'result' || phase === 'revealing') && '-translate-x-[150%] opacity-0',
-            // Shake animation during shaking phase
-            phase === 'shaking' && 'animate-bowl-shake cursor-pointer',
-            // Show cursor when waiting
-            phase === 'waiting' && 'cursor-pointer',
-          )}
+          onClick={isBowlClickable ? onBowlClick : undefined}
+          className={`absolute inset-0 flex items-center justify-center z-20 transition-all duration-700 ease-out ${
+            isBowlVisible ? 'opacity-100 translate-x-0' : '-translate-x-[150%] opacity-0'
+          } ${shouldShakeBowl ? 'animate-bowl-shake cursor-pointer' : ''} ${
+            isBowlClickable && !shouldShakeBowl ? 'cursor-pointer' : ''
+          }`}
         >
           <img
             src={bowlImg}
             alt="Bát"
-            className={cn(
-              'w-[70%] h-auto object-contain drop-shadow-2xl',
-              '-mt-[10%]',
-            )}
+            className="w-[70%] h-auto object-contain drop-shadow-2xl -mt-[10%]"
           />
         </div>
       </div>
