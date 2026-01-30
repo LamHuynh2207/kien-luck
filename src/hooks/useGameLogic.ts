@@ -50,23 +50,16 @@ export const useGameLogic = () => {
     
     const results = rollDice();
 
-    // Transition qua revealing trước
+    // Direct transition to result with faster animation (100ms instead of 300ms)
     setGameState(prev => ({
       ...prev,
-      phase: 'revealing',
-      message: 'Đang mở...',
+      phase: 'result',
+      diceResults: results,
+      message: 'Kết quả!',
     }));
 
-    // Sau đó chuyển sang result
+    // Update cards state after initial render
     setTimeout(() => {
-      setGameState(prev => ({
-        ...prev,
-        phase: 'result',
-        diceResults: results,
-        message: 'Kết quả!',
-      }));
-
-      // Cập nhật trạng thái các thẻ kiến
       setCards(prevCards => prevCards.map(card => {
         const isInResult = results.includes(card.id);
         return { 
@@ -74,7 +67,7 @@ export const useGameLogic = () => {
           state: isInResult ? 'win' : 'normal' 
         };
       }));
-    }, 300);
+    }, 100);
   }, [rollDice, gameState.phase]);
 
   /**

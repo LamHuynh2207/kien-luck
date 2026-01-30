@@ -1,4 +1,5 @@
 // Import board frame and individual ant images
+import { memo, useMemo } from 'react';
 import boardFrameImg from '@/assets/board-frame.png';
 import antStudent from '@/assets/ant-student.png';
 import antWarrior from '@/assets/ant-warrior.png';
@@ -37,7 +38,10 @@ const ANT_SLOTS = [
   { position: 6, diceValue: 3, image: antSports, name: 'Kiến Vận Động' },
 ];
 
-export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
+export const AntBoard = memo(({ highlightedAnts }: AntBoardProps) => {
+  // Memoize ant slots to avoid recalculation
+  const antSlots = useMemo(() => ANT_SLOTS, []);
+  
   return (
     <>
       <style>{blinkStyle}</style>
@@ -50,6 +54,7 @@ export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
         src={boardFrameImg}
         alt="Bảng chọn kiến"
         className="absolute inset-0 w-full h-full object-contain"
+        loading="eager"
       />
 
       {/* Ant grid – fit cứng theo board */}
@@ -60,7 +65,7 @@ export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
           gap: '1.5%',         // khớp đường kẻ đỏ
         }}
       >
-        {ANT_SLOTS.map((slot) => {
+        {antSlots.map((slot) => {
           const isHighlighted = highlightedAnts.includes(slot.diceValue);
 
           return (
@@ -79,6 +84,7 @@ export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
                     ? 'antBlink 0.6s ease-in-out infinite'
                     : 'none',
                 }}
+                loading="eager"
               />
             </div>
           );
@@ -87,4 +93,4 @@ export const AntBoard = ({ highlightedAnts }: AntBoardProps) => {
     </div>
     </>
   );
-};
+});

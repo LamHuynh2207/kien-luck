@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import lacButtonImg from '@/assets/lac-button.png';
 
 interface ShakeButtonProps {
@@ -9,7 +10,7 @@ interface ShakeButtonProps {
  * Shake button using the lac-button.png image
  * Triggers dice rolling animation
  */
-export const ShakeButton = ({ onClick, disabled = false }: ShakeButtonProps) => {
+export const ShakeButton = memo(({ onClick, disabled = false }: ShakeButtonProps) => {
   return (
     <button
       onClick={onClick}
@@ -22,7 +23,8 @@ export const ShakeButton = ({ onClick, disabled = false }: ShakeButtonProps) => 
         src={lacButtonImg}
         alt="LẮC"
         className="w-[16vw] min-w-[130px] max-w-[240px] h-auto object-contain drop-shadow-lg"
+        loading="eager"
       />
     </button>
   );
-};
+});
